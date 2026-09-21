@@ -1,0 +1,5 @@
+weights/*.pth filter=lfs diff=lfs merge=lfs -text
+*.sh text eol=lf
+*.sbatch text eol=lf
+*.py text eol=lf
+*.npz binary

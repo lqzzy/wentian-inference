@@ -1,0 +1,3 @@
+# Install the fitted USTC PyTorch 2.8 SVE2 wheel/environment separately.
+numpy==2.0.2
+einops==0.8.1

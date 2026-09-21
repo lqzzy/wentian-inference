@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wentian-inference"
+version = "1.1.0"
+description = "Wentian weather-model inference optimized for Kunpeng 920F NUMA systems"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+dependencies = [
+  "einops>=0.8,<1",
+  "numpy>=2,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff==0.12.12",
+]
+analysis = [
+  "netCDF4>=1.7,<2",
+  "Pillow>=11,<12",
+  "xarray>=2024.7,<2027",
+]
+
+[project.scripts]
+wentian = "wentian.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+wentian = ["data/constants/*.npz"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "N", "UP", "SIM"]
