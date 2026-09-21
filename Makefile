@@ -14,6 +14,7 @@ verify: test
 	@$(PYTHON) scripts/verify_artifacts.py
 
 model-check:
+	@$(PYTHON) scripts/ensure_checkpoint.py
 	@$(PYTHON) scripts/check_model.py
 
 format:

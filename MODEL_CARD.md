@@ -23,10 +23,12 @@ pressure-level and surface recovery heads.
 ## Checkpoint
 
 ```text
-path:    weights/wentian_beta.pth
-size:    1,382,298,257 bytes
-sha256:  56b68db5ae3b64e698bcccce1b552dc4a60caa0c0113d1372365b0c9a6198120
-storage: Git LFS
+archive:        weights/wentian_beta.pth.gz
+archive size:   274,911,774 bytes
+archive sha256: 9071dbe34001aa620cfa1378e1870d1d35960fa426ead6d7ba07ff5cbb461a3b
+restored size:  1,382,298,257 bytes
+restored sha256:56b68db5ae3b64e698bcccce1b552dc4a60caa0c0113d1372365b0c9a6198120
+storage:        Git LFS
 ```
 
 The same trained checkpoint is converted to the selected runtime precision at

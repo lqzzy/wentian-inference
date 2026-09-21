@@ -9,9 +9,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CHECKPOINT = ROOT / "weights" / "wentian_beta.pth"
+CHECKPOINT_ARCHIVE = ROOT / "weights" / "wentian_beta.pth.gz"
 CONSTANTS = ROOT / "src/wentian/data/constants/era5_infer.npz"
 EXPECTED_SIZE = 1_382_298_257
 EXPECTED_SHA256 = "56b68db5ae3b64e698bcccce1b552dc4a60caa0c0113d1372365b0c9a6198120"
+EXPECTED_ARCHIVE_SIZE = 274_911_774
+EXPECTED_ARCHIVE_SHA256 = "9071dbe34001aa620cfa1378e1870d1d35960fa426ead6d7ba07ff5cbb461a3b"
 EXPECTED_CONSTANTS_SHA256 = "72041544f06252dcf0f753533c895ef381f6084db65cbde0bb7816b73c607419"
 REQUIRED = (
     ROOT / "src/wentian/data/preprocess.py",
@@ -29,6 +32,7 @@ REQUIRED = (
     ROOT / "src/wentian/runtime/workers.py",
     ROOT / "run_fp32.sh",
     ROOT / "run_fp64.sh",
+    ROOT / "scripts/ensure_checkpoint.py",
     ROOT / "scripts/submit_920f.sh",
     ROOT / "scripts/run_920f.sbatch",
     ROOT / "scripts/run_920f_job.sh",
@@ -51,22 +55,31 @@ def main() -> None:
     missing = [str(path.relative_to(ROOT)) for path in REQUIRED if not path.is_file()]
     if missing:
         raise SystemExit("missing required files: " + ", ".join(missing))
-    if not CHECKPOINT.is_file():
-        raise SystemExit("checkpoint is missing; run git lfs pull")
-    if CHECKPOINT.stat().st_size != EXPECTED_SIZE:
+    if not CHECKPOINT_ARCHIVE.is_file():
+        raise SystemExit("compressed checkpoint is missing; run git lfs pull")
+    if CHECKPOINT_ARCHIVE.stat().st_size != EXPECTED_ARCHIVE_SIZE:
         raise SystemExit(
-            f"checkpoint size mismatch: {CHECKPOINT.stat().st_size} != {EXPECTED_SIZE}; "
-            "the checkout may contain an LFS pointer"
+            f"checkpoint archive size mismatch: {CHECKPOINT_ARCHIVE.stat().st_size} "
+            f"!= {EXPECTED_ARCHIVE_SIZE}; the checkout may contain an LFS pointer"
         )
     if not args.fast:
-        actual = sha256(CHECKPOINT)
-        if actual != EXPECTED_SHA256:
-            raise SystemExit(f"checkpoint sha256 mismatch: {actual}")
+        archive_sha256 = sha256(CHECKPOINT_ARCHIVE)
+        if archive_sha256 != EXPECTED_ARCHIVE_SHA256:
+            raise SystemExit(f"checkpoint archive sha256 mismatch: {archive_sha256}")
+    if CHECKPOINT.is_file():
+        if CHECKPOINT.stat().st_size != EXPECTED_SIZE:
+            raise SystemExit(
+                f"restored checkpoint size mismatch: {CHECKPOINT.stat().st_size} != {EXPECTED_SIZE}"
+            )
+        if not args.fast:
+            actual = sha256(CHECKPOINT)
+            if actual != EXPECTED_SHA256:
+                raise SystemExit(f"restored checkpoint sha256 mismatch: {actual}")
     constants_sha256 = sha256(CONSTANTS)
     if constants_sha256 != EXPECTED_CONSTANTS_SHA256:
         raise SystemExit(f"constants sha256 mismatch: {constants_sha256}")
     print(
-        f"artifacts OK: checkpoint={CHECKPOINT.stat().st_size} bytes "
+        f"artifacts OK: checkpoint_archive={CHECKPOINT_ARCHIVE.stat().st_size} bytes "
         f"constants={CONSTANTS.stat().st_size} bytes" + (" (fast)" if args.fast else "")
     )
 

@@ -31,7 +31,9 @@ def main(argv: list[str] | None = None) -> None:
     checkpoint = DEFAULT_CHECKPOINT.resolve()
     input_root = args.input_root.expanduser().resolve()
     if not checkpoint.is_file():
-        raise SystemExit(f"checkpoint not found: {checkpoint}; run 'git lfs pull'")
+        raise SystemExit(
+            f"checkpoint not found: {checkpoint}; run 'python3 scripts/ensure_checkpoint.py'"
+        )
     if not input_root.is_dir():
         raise SystemExit(f"input directory not found: {input_root}")
 

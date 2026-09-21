@@ -22,12 +22,13 @@ class RepositoryTests(unittest.TestCase):
             "src/wentian/runtime/topology.py",
             "src/wentian/data/preprocess.py",
             "src/wentian/data/constants/era5_infer.npz",
-            "weights/wentian_beta.pth",
+            "weights/wentian_beta.pth.gz",
             "run_fp32.sh",
             "run_fp64.sh",
             "scripts/submit_920f.sh",
             "scripts/run_920f.sbatch",
             "scripts/run_920f_job.sh",
+            "scripts/ensure_checkpoint.py",
         )
         for relative in required:
             self.assertTrue((ROOT / relative).is_file(), relative)

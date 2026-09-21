@@ -23,7 +23,7 @@ ERA5 预处理常量和 15 天自回归预测入口。两个精度均可用一�
 │   ├── forecast.py             # 60 步自回归预测
 │   └── precision.py            # FP32/FP64 类型选择
 ├── tests/                      # 无需 920F 的仓库接口测试
-└── weights/wentian_beta.pth    # Git LFS 检查点
+└── weights/wentian_beta.pth.gz # Git LFS 压缩检查点
 ```
 
 ## Environment
@@ -38,6 +38,9 @@ cd wentian-inference
 git lfs pull
 python3 -m pip install -e .
 ```
+
+首次推理会自动将压缩检查点恢复为 `weights/wentian_beta.pth` 并核对 SHA256；恢复后的
+文件已被 Git 忽略，后续运行不会重复解压。
 
 通用 PyPI PyTorch 可以检查模型功能，但不能复现 920F 性能；性能运行应使用目标平台提供的
 SVE2 构建。仓库不会写入或依赖个人目录。
